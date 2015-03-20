@@ -1,0 +1,42 @@
+### Author: Varun Satrawla (vsatrawla@yahoo.com) - 3/19/2015
+
+
+This is a quick and dirty prototype for machine learning based fog gw application written in python.
+
+
+Fog gateway:
+1.  Fog gateway uses samples collected a-priori (dataset1) to “learn" about baseline normal.
+    dataset1 is 317x2 matrix, where each row represents a sample in the form [throughput, latency]
+
+2. Fog gateway uses multivariate gaussian distrubution to fit the dataset1. It determines mean and 
+   variance of dataset1. For simplicity, it picks epsilon heuristically though it could be determined
+   algorithmically as well.
+
+3. After this, fog gateway goes into listening mode, where it receives samples from a client application over 
+   a simple socket interface. On receiving a sample, the gateway applies anomaly detection algorithm to determine
+   if the sample is anomalous or not. It prints message on the console, if so.
+
+
+Fog node:
+1. Fog client use dataset2 Fog clients send periodic 2D samples as: [throughput, latency]
+2. samples are serialized and deserialized before sending to the server for processing. I used pickles to
+   do so, but ideally it should be JSON or something equivalent.
+3. In order to avoid overwhelming server, samples are sent every 50msec.
+
+Connectivity is as follows:
+
+[fog-node.py]----socket interface-----[fog-gw.py]
+
+Files:
+fog-gw.pv   : gateway code
+learn.py    : machine learning code
+fog-node.py : client code
+ex8data1.mat : matlab formatted dataset
+README
+
+Caveats: 
+It’s working code, but some of the libraries work only with python 3.3. So a part of the scripts would require that.
+datasets are provided publicly, courtesy Andrew NG 
+I have borrowed concepts from various online resources, but have not copied code
+The code is rudimentary (meaning no exception handling, error handling etc.)
+I am a beginner in python, so be nice to me!
