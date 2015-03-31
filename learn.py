@@ -8,9 +8,11 @@ import scipy.io
 import matplotlib.pyplot as plt
 import matplotlib.font_manager
 import math
+from jsonparse import find_dataset 
 from scipy.stats import multivariate_normal
 
 import numpy.matlib as M
+client_info = {}
 
 def plotgraph (Xval):
     fig = plt.figure()
@@ -43,38 +45,57 @@ def select_epsilon ():
 # Reads dataset and fits it to multivariate gaussian distribution
 # and saves mu and sigma in global variable for efficiency
 #
-def mv_gausian_fit ():
-    global mu
-    global sigma
-    global A
-    global epsilon
-
-    A = scipy.io.loadmat('ex8data1.mat')
-
+def mv_gausian_fit (portno):
+    global client_info
+    
+    (port,name,fname) = find_dataset('clients.js', portno)
+        
+    if port == 0:
+        print("No data set found for this client %s\n" % portno)
+        return 0
+    
+    A = scipy.io.loadmat(fname)    
+    print("Using %s for this client\n" % fname)
+    
     Xval = A['Xval']
     Yval = A['yval']
     X=A['X']
-
+ 
     mu = np.mean(X, axis=0)
     sigma = np.std(X, axis=0)
     sigma = sigma**2
-
-
+    
+    print_client_info()
+    
     n=Xval.shape
     elems = 0
 
     epsilon = select_epsilon()
 
+    client_info[port] = (mu,sigma, epsilon)
+    
+    print_client_info()
+    
     return
 
-def is_sample_anamalous (X):
-    global mu
-    global sigma
-    global epsilon
-    # Find probability based on learned parms (vectors)
-    p = mvpdf(X, mu, sigma)
+def print_client_info():
+    global client_info
+    return (client_info)
+    
 
-    if p < epsilon:
+def is_sample_anamalous (X, p):
+    global client_info
+
+    # add error statements
+    
+    mu = client_info[str(p)][0]
+    sigma = client_info[str(p)][1]
+    epsilon = client_info[str(p)][2]
+    
+    # Find probability based on learned parms (vectors)
+    pb = mvpdf(X, mu, sigma)
+
+    if pb < epsilon:
         return(1)
 
     return(0)
@@ -84,5 +105,6 @@ def main():
     global sigma
     #load dataset from matlab formatted file 
     global A
+    
 
 main()
