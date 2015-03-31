@@ -100,11 +100,3 @@ def is_sample_anamalous (X, p):
 
     return(0)
    
-def main():
-    global mu
-    global sigma
-    #load dataset from matlab formatted file 
-    global A
-    
-
-main()
