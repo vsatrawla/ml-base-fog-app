@@ -1,6 +1,22 @@
 ### Author: Varun Satrawla (vsatrawla@yahoo.com) - 3/19/2015
 
 
+Release 2 notes: 
+Support for multiple concurrent clients that includes
+    - socketserver lib based server code that handles multiple client requests simultaneously
+    - For simplicity I have used source port of the incoming client as an identifier. Each client has independent dataset file
+    - Client profiles are stored in JSON  file. Each profile has the following fields: (port#, name, dataset file name)
+    - Modified test clients to send arbitrary samples tuples 
+    - Tested up to 5 simultaneous clients 
+
+2. Rudimentary Rest API that returns mean, standard deviation and epsilon for each connected client.
+    -  A client dictionary is created with port as index. Dictionary is converted to xml before sending over REST i/f
+
+Added some (but not enough) exception handling and traces.
+
+
+Release 1 Notes:
+
 This is a quick and dirty prototype for machine learning based fog gw application written in python.
 
 
